@@ -1,0 +1,60 @@
+1.Write a shell script that takes a directory path and an extension as input and creates a backup of all files in the directory that have the specified extension. The script should create a new directory named "backup" in the same directory as the original files and copy all files with the specified extension to the backup directory. If the backup directory already exists, the script should prompt the user to confirm whether to overwrite it or not.(Using Functions)
+#!/bin/bash
+read -p "path : " path
+read -p "ext : " ext
+backup() {
+#create directory
+mkdir $path
+cp -r *.$ext $path
+}
+if [ -d $path ]; then
+echo "directory is exists"
+read -p "opt[y/n] : " opt
+    if [ $opt=y -o $opt=Y ]; then
+    echo "backup directory is over_riding"
+    cp -r *.$ext $path
+    fi
+else
+echo "calling the function"
+backup
+fi
+output:
+root@vamsi-VirtualBox:~/shells# bash yest
+path : /var/backup
+ext : txt
+directory is exists
+opt[y/n] : y
+backup directory is over_riding
+
+2.Write a shell script that takes a list of file paths as input and creates a compressed archive of all the files. The script should prompt the user to specify the compression format (zip or tar), and the archive name. The script should also display the size of the original and compressed files and the compression ratio.
+#!/bin/bash
+read -p "format_type (zip/tar): " compression_format
+read -p "archive_name: " archive_name
+ 
+# create archive based on compression format and archive name
+if [ "$compression_format" = "zip" ];
+then
+        du -h $archive_name
+        zip -r $archive_name.zip $archive_name
+        du -h $archive_name.zip
+ 
+elif [ "$compression_format" = "tar" ];
+then
+        du -h $archive_name
+        tar -cvf $archive_name.tar $archive_name
+        du -h $archive_name.tar
+else
+        echo "Invalid compression format. Supported formats are zip and tar"
+fi 
+
+
+output:
+root@vamsi-VirtualBox:~/shells# bash tar
+format_type (zip/tar): zip
+archive_name: /var/backup
+4.0K	/var/backup
+  adding: var/backup/ (stored 0%)
+  adding: var/backup/F2.txt (stored 0%)
+  adding: var/backup/F1.txt (stored 0%)
+  adding: var/backup/F3.txt (stored 0%)
+4.0K	/var/backup.zip

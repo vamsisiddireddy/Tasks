@@ -1,0 +1,310 @@
+Task1
+1.Write a shell script that deletes all lines containing a specified word in one or more files supplied as arguments to it?
+#!/bin/bash
+if [ $# -eq 0 ]
+then
+echo NO ARGUMENTS
+else
+pattern=$1
+shift
+for fname in $*
+do
+if [ -f $fname ]
+then
+echo DELETING $pattern FROM $fname
+sed '/'$pattern'/d' $fname
+
+else
+echo $fname NOT FOUND
+fi
+done
+fi
+
+output:
+./tt1 vamsi f1 f2
+DELETING vamsi FROM f1
+this is f1 file.
+f1 is normal file.
+DELETING vamsi FROM f2
+
+2.Write a shell script to list all of the directory files in a directory?
+
+# !/bin/bash
+echo "enter directory name"
+read dir
+if [ -d $dir ]
+then
+echo "list of files in the directory"
+cd $dir
+ls -al
+else
+echo "enter proper directory name"
+fi
+
+output:
+./tt2 
+enter directory name
+tt
+list of files in the directory
+total 8
+drwxrwxr-x 2 vamsi vamsi 4096 Feb 20 11:38 .
+drwxrwxr-x 3 vamsi vamsi 4096 Feb 20 11:38 ..
+-rw-rw-r-- 1 vamsi vamsi    0 Feb 20 11:38 f1
+-rw-rw-r-- 1 vamsi vamsi    0 Feb 20 11:38 f10
+-rw-rw-r-- 1 vamsi vamsi    0 Feb 20 11:38 f2
+-rw-rw-r-- 1 vamsi vamsi    0 Feb 20 11:38 f3
+-rw-rw-r-- 1 vamsi vamsi    0 Feb 20 11:38 f4
+-rw-rw-r-- 1 vamsi vamsi    0 Feb 20 11:38 f5
+-rw-rw-r-- 1 vamsi vamsi    0 Feb 20 11:38 f6
+-rw-rw-r-- 1 vamsi vamsi    0 Feb 20 11:38 f7
+-rw-rw-r-- 1 vamsi vamsi    0 Feb 20 11:38 f8
+-rw-rw-r-- 1 vamsi vamsi    0 Feb 20 11:38 f9
+
+3.Monitoring Disk Space utilization and Send Email Alert using script?
+
+#!/bin/bash
+THRESHOLD=90
+mailto="root"
+HOSTNAME=$(hostname)
+
+ 
+
+for path in `/bin/df -h | grep -vE 'Filesystem|tmpfs' | awk '{print $5}' | sed 's/%//g'`
+
+ 
+
+do
+     if [ $path -ge $THRESHOLD ] ; then
+     df -h | grep $path% >> /tmp/temp
+     fi
+done
+
+ 
+
+VALUE=`cat /tmp/temp | wc -l`
+        if [ $VALUE -ge 1 ] ; then
+        mail -s "$HOSTNAME Disk Usage is Critical" $mailto < /tmp/temp
+        fi
+
+ 
+
+rm -rf /tmp/temp
+
+4.Write a simple script to install any tomcat server?
+
+#!/bin/bash
+req_tom_ver="7.0.25"
+tom_m_v=$(echo $req_tom_ver|cut -c 1)
+url="https://archive.apache.org/dist/tomcat/tomcat-${tom_m_v}/v${req_tom_ver}/bin/apache-tomcat-${req_tom_ver}.tar.gz"
+wget $url
+tar xvf apache-tomcat-${req_tom_ver}.tar.gz
+mv apache-tomcat-${req_tom_ver} tomcat${tom_m_v}
+rm -rf apache-tomcat-${req_tom_ver}.tar.gz
+
+output
+vamsi@vamsi-VirtualBox:~$ sh apache.sh 
+--2023-02-20 12:07:41--  https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.25/bin/apache-tomcat-7.0.25.tar.gz
+Resolving archive.apache.org (archive.apache.org)... 138.201.131.134, 2a01:4f8:172:2ec5::2
+Connecting to archive.apache.org (archive.apache.org)|138.201.131.134|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 7527434 (7.2M) [application/x-gzip]
+Saving to: ‘apache-tomcat-7.0.25.tar.gz’
+
+apache-tomcat-7.0.2 100%[==================>]   7.18M  1.37MB/s    in 5.7s    
+
+2023-02-20 12:07:48 (1.27 MB/s) - ‘apache-tomcat-7.0.25.tar.gz’ saved [7527434/7527434]
+
+5.write a shell script using arithmetic operators for adding, multiplication and subtraction of any two numbers?
+
+#!/bin/sh
+
+read -p "val1: " a
+read -p "val2: " b
+
+val=`expr $a + $b`
+echo "a + b : $val"
+
+val=`expr $a - $b`
+echo "a - b : $val"
+
+val=`expr $a \* $b`
+echo "a * b : $val"
+
+output
+val1: 5
+val2: 10
+a + b : 15
+a - b : -5
+a * b : 50
+
+6.This example script prompts the user to enter a month and outputs the number of days.
+ There are three possible answers: 30 days, 31 days, 28 or 29 days for February.
+
+#!/bin/bash 
+
+shopt -s nocasematch 
+
+echo "Enter the name of a month." 
+
+read month 
+
+case $month in 
+
+  February) 
+
+  
+
+echo "There are 28/29 days in $month.";; 
+
+  April | June | September | November) 
+
+echo "There are 30 days in $month.";; 
+
+  January | March | May | July | August | October | December) 
+
+echo "There are 31 days in $month.";; 
+
+  *) 
+
+echo "Unknown month. Please check if you entered the correct month name: $month";; 
+
+esac 
+
+output:
+vamsi@vamsi-VirtualBox:~/Desktop/first$ sh cal.sh 
+cal.sh: 3: shopt: not found
+Enter the name of a month.
+June
+There are 30 days in June.
+
+7.How to schedule cronjobs for running any script like backup of logs?
+crontab -e
+* * * * * /scripts/job.sh
+
+8.How will you debug a script if you have made any mistakes in a already written script?
+
+#!/bin/bash
+
+set -x # enable debugging
+
+# set variables
+MYVAR="Hello"
+FILENAME="myfile.txt"
+
+# create file and write to it
+touch $FILENAME
+echo $MYVAR > $FILENAME
+
+# check if file exists
+if [ -f $FILENAME ]
+then
+  echo "File created successfully"
+else
+  echo "File creation failed"
+fi
+
+set +x # disable debugging
+
+output:
+vamsi@vamsi-VirtualBox:~/Desktop/first$ sh deb
++ MYVAR=Hello
++ FILENAME=myfile.txt
++ touch myfile.txt
++ echo Hello
++ [ -f myfile.txt ]
++ echo File created successfully
+File created successfully
++ set +x
+
+9.Script for iterations if-else, for, etc.,?
+if-else
+#!/bin/bash
+echo -e "enter the file name : \n"
+read file
+if [ -s "$file" ];
+then
+echo "it is empty file"
+else
+echo "its not empty file"
+fi
+
+vamsi@vamsi-VirtualBox:~/Desktop$ ./make 
+enter the file name : 
+
+pass
+it is empty file
+
+while:
+
+#!/bin/bash
+val=1
+while [ $val -le 5 ]
+do
+  echo "value is $val"
+  val=$((val+1))
+done
+
+echo "Loop complete"
+
+output:
+value is 1
+value is 2
+value is 3
+value is 4
+value is 5
+Loop complete
+
+for:
+#!/bin/bash
+for val in 0 1 2 3 4 5
+do
+echo "i value is $val"
+done
+
+output:
+i value is 0
+i value is 1
+i value is 2
+i value is 3
+i value is 4
+i value is 5
+
+Task2
+1.The script prompts the user to enter the path to the CSV file.
+2.Validate the file if its not CSV the script should terminate
+3.The script prompts the user to enter an age range (e.g., "18-25") to filter the results.
+4.If not in given range expression  script should prompt to enter with an example to enter the rangeThe script reads the CSV file and extracts the following information for each user    a. First name          b. Last name          c. Email address          d. Age      
+5. The script displays the user data for all users whose age falls within the specified range.
+
+#!/bin/bash
+read -p  "give path" path
+if [ -n "$(find $path -type f -name '*.csv')" ];
+then
+echo "csv file is present"
+else
+echo "file not present"
+exit
+fi
+read -p "enter the age" age
+while [ "$age" -ge 18 -a "$age" -le 25 ];
+do
+cat $path | grep $age
+((age++))
+done
+exit
+echo "age is not matched please try again"
+
+output:
+vamsi@vamsi-VirtualBox:~/Desktop$ ./task1.sh 
+give path/home/vamsi/Desktop/test.csv
+csv file is present
+enter the age18
+redmi redmi1 redmi@gmail.com 18
+moto moto1 moto@gmail.com 19
+nokia nokia1 linux@gmail.com 20
+samsung samsung1 samsung@gmail.com 21
+linux linux1 linux@gmail.com 22
+unix unix2 unix@gmail.com 23
+macos macos3 macos@gmail.com 24
+windows windows4 windows@gmail.com 25
+
